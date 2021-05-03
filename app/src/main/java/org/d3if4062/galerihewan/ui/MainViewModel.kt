@@ -1,16 +1,33 @@
 package org.d3if4062.galerihewan.ui
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.launch
 import org.d3if4062.galerihewan.R
 import org.d3if4062.galerihewan.model.Hewan
+import org.d3if4062.galerihewan.network.HewanApi
+import java.lang.Exception
 
 class MainViewModel : ViewModel() {
     private val data = MutableLiveData<List<Hewan>>()
 
     init {
         data.value = initData()
+        retriveData()
+    }
+
+    private fun retriveData() {
+        viewModelScope.launch {
+            try {
+                val result = HewanApi.service.getHewan()
+                Log.d("MainViewModel", "Success: $result")
+            } catch (e: Exception) {
+                Log.d("MainViewModel", "Failure: ${e.message}")
+            }
+        }
     }
 
     // Data ini akan kita ambil dari server di langkah selanjutnya
